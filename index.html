@@ -10,7 +10,7 @@
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 
-  <!-- This is the body section that helps input the content -->
+<!-- This is the body section that helps input the content -->
   <body style="margin:0; overflow:hidden;">
     <!-- The a-scene is the container that keeps all the 3D elements together -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
@@ -26,36 +26,41 @@
           <!-- The a entity section is where Ponte is inputed and I can scale it and move the positioning -->
           <a-entity 
             gltf-model="url(final_ponte.glb)" 
-            scale="0.25 0.25 0.25" 
+            scale="0.15 0.15 0.15" 
             position="0 0 0" 
             rotation="0 0 0">
           </a-entity>
 
-          <!-- This section is the story one image overlays where I can also size them -->
-          <a-image id="story1_img" src="img/story_1_overlay.png" width="0.5" height="0.5" position="-1.0 1.2 0"></a-image>
-          <a-image id="story1_about" src="img/story_1_about_overlay.png" width="0.5" height="0.5" position="-1.0 0.65 0" visible="false"></a-image>
-          <a-image id="story1_fact" src="img/story_1_fact_overlay.png" width="0.5" height="0.5" position="-1.0 0.1 0" visible="false"></a-image>
+          <!-- Spacing settings -->
+          <!-- Base position for overlays -->
+          <!-- Reduced spacing so all overlays fit building height -->
+          <!-- Overlay spacing set equally for both stories -->
+
+          <!-- Story 1 overlays -->
+          <a-image id="story1_img" src="img/story_1_overlay.png" width="0.5" height="0.2" position="-0.8 0.6 0"></a-image>
+          <a-image id="story1_about" src="img/story_1_about_overlay.png" width="0.5" height="0.2" position="-0.8 0.3 0" visible="false"></a-image>
+          <a-image id="story1_fact" src="img/story_1_fact_overlay.png" width="0.5" height="0.2" position="-0.8 0.0 0" visible="false"></a-image>
           
           <!-- This is making the first overlay of story 1 clickable, it is a button as an image-->
           <a-plane 
             id="story1_button" 
             class="clickable" 
-            width="0.5" height="0.5" 
-            position="-1.0 1.2 0" 
+            width="0.3" height="0.3" 
+            position="-0.8 0.6 0" 
             material="opacity: 0; transparent: true">
           </a-plane>
 
-          <!-- This is section two of story 2 for the image overlays where I can also size the images -->
-          <a-image id="story2_img" src="img/story_2_overlay.png" width="0.5" height="0.5" position="0.6 1.2 0"></a-image>
-          <a-image id="story2_about" src="img/story_2_about_overlay.png" width="0.5" height="0.5" position="0.6 0.65 0" visible="false"></a-image>
-          <a-image id="story2_fact" src="img/story_2_fact_overlay.png" width="0.5" height="0.5" position="0.6 0.1 0" visible="false"></a-image>
+          <!-- Story 2 overlays -->
+          <a-image id="story2_img" src="img/story_2_overlay.png" width="0.5" height="0.2" position="0.5 0.6 0"></a-image>
+          <a-image id="story2_about" src="img/story_2_about_overlay.png" width="0.5" height="0.2" position="0.5 0.3 0" visible="false"></a-image>
+          <a-image id="story2_fact" src="img/story_2_fact_overlay.png" width="0.5" height="0.2" position="0.5 0.0 0" visible="false"></a-image>
           
           <!-- This is making the first overlay of story 2 clickable, it is a button as an image-->
           <a-plane 
             id="story2_button" 
             class="clickable" 
-            width="0.5" height="0.5" 
-            position="0.6 1.2 0" 
+            width="0.3" height="0.3" 
+            position="0.5 0.6 0" 
             material="opacity: 0; transparent: true">
           </a-plane>
         </a-entity>
