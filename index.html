@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>54 Stories AR</title>
+  <!-- A frame library -->
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <!-- ar.js library -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+
+<!-- This is the body section that helps input the content -->
+  <body style="margin:0; overflow:hidden;">
+    <!-- The a-scene is the container that keeps all the 3D elements together -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      <!-- This is the webcam that allows the camera to work and ensure experience is complete -->
+      <a-entity camera>
+        <!-- This lets the user click the objects with a mouse or tap on mobile -->
+        <a-entity cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>  
+      </a-entity>
+
+      <!-- This small section is the model of Ponte -->
+      <a-marker type="pattern" url="pattern.patt"
+                emitevents="true"
+                smooth="true"
+                smoothCount="10"
+                smoothTolerance="0.01"
+                smoothThreshold="5">
+        <a-entity position="0 0 0">
+          <!-- The a entity section is where Ponte is inputed and I can scale it and move the positioning -->
+          <a-entity 
+            gltf-model="url(final_ponte.glb)" 
+            scale="0.15 0.15 0.15" 
+            position="0 0 0" 
+            rotation="0 0 0">
+          </a-entity>
+
+          <!-- Spacing settings -->
+          <!-- Base position for overlays -->
+          <!-- Reduced spacing so all overlays fit building height -->
+          <!-- Overlay spacing set equally for both stories -->
+
+          <!-- Story 1 overlays -->
+          <a-image id="story1_img" src="img/story_1_overlay.png" width="0.5" height="0.2" position="-0.8 0.6 0"></a-image>
+          <a-image id="story1_about" src="img/story_1_about_overlay.png" width="0.5" height="0.2" position="-0.8 0.3 0" visible="false"></a-image>
+          <a-image id="story1_fact" src="img/story_1_fact_overlay.png" width="0.5" height="0.2" position="-0.8 0.0 0" visible="false"></a-image>
+          
+          <!-- This is making the first overlay of story 1 clickable, it is a button as an image-->
+          <a-plane 
+            id="story1_button" 
+            class="clickable" 
+            width="0.3" height="0.3" 
+            position="-0.8 0.6 0" 
+            material="opacity: 0; transparent: true">
+          </a-plane>
+
+          <!-- Story 2 overlays -->
+          <a-image id="story2_img" src="img/story_2_overlay.png" width="0.5" height="0.2" position="0.5 0.6 0"></a-image>
+          <a-image id="story2_about" src="img/story_2_about_overlay.png" width="0.5" height="0.2" position="0.5 0.3 0" visible="false"></a-image>
+          <a-image id="story2_fact" src="img/story_2_fact_overlay.png" width="0.5" height="0.2" position="0.5 0.0 0" visible="false"></a-image>
+          
+          <!-- This is making the first overlay of story 2 clickable, it is a button as an image-->
+          <a-plane 
+            id="story2_button" 
+            class="clickable" 
+            width="0.3" height="0.3" 
+            position="0.5 0.6 0" 
+            material="opacity: 0; transparent: true">
+          </a-plane>
+        </a-entity>
+      </a-marker>
+    </a-scene>
+
+    <!-- This is the audio section for when the user clicks on the story it, plays the voice recording of the story -->
+    <audio id="story1_audio" src="audio/story_1.mp3"></audio>
+    <audio id="story2_audio" src="audio/story_2.mp3"></audio>
+
+    <!-- The place where all the animations and functionality take place -->
+    <script>
+      // This is where the slide down also known as drop downs appear
+      function animateDropdown(image, targetY, delay = 0) {
+        setTimeout(() => {
+          image.setAttribute('visible', true); //When an image is visible which is true, it animates downwards
+          image.setAttribute('animation', {
+            property: 'position',
+            to: `${image.getAttribute('position').x} ${targetY} ${image.getAttribute('position').z}`,
+            dur: 500,
+            easing: 'easeOutQuad'
+          });
+        }, delay); //The delay makes the animation smooth and not rough.
+      }
+
+      // This function reverses it, it slides up and hides
+      function animateDown(image, targetY) {
+        image.setAttribute('animation', {
+          property: 'position',
+          to: `${image.getAttribute('position').x} ${targetY} ${image.getAttribute('position').z}`,
+          dur: 500,
+          easing: 'easeInQuad'
+        });
+        setTimeout(() => image.setAttribute('visible', false), 500);
+      }
+
+      // This ensures that when a user clicks on story 1, it plays one audio at a time, not more than one
+      function stopAllAudio() {
+        document.querySelectorAll('audio').forEach(audio => {
+          audio.pause();
+          audio.currentTime = 0;
+        });
+      }
+
+      //This is a reusable function, each of the toggles own panels 
+      function setupStoryButton(buttonId, aboutId, factId, otherAboutId, otherFactId, audioId = null) {
+        // Grabs the DOM elements and uses the ID
+        const button = document.querySelector(buttonId); //The button to click open/close a story
+        const about = document.querySelector(aboutId); //The about information overlay for story 1
+        const fact = document.querySelector(factId); //The fact information overlay for story 2
+        const otherAbout = document.querySelector(otherAboutId); //The about information overlay for story 1
+        const otherFact = document.querySelector(otherFactId); //The fact information overlay for story 2
+
+        // This function is that if audio is not selected, otherwise nothing will happen
+        const audio = audioId ? document.querySelector(audioId) : null; 
+
+        // The function works when the user clicks on it
+        // Overall the function is where the overlay opens, the audio starts or if it closes it stops.
+        function toggleDropdown() {
+          const isVisible = about.getAttribute('visible');
+
+          // If the story 1 overlay is not visible, then open this story
+          if (!isVisible) {
+            animateDropdown(about, about.getAttribute('position').y, 0); //Animates the about overlay down
+            animateDropdown(fact, fact.getAttribute('position').y, 300); //It animates the fact overlay 300ms seconds after to ensure smoothness
+            
+            //Hides the other story panels by animating them down
+            animateDown(otherAbout, otherAbout.getAttribute('position').y);
+            animateDown(otherFact, otherFact.getAttribute('position').y);
+
+            // If there is audio linked to the story, then 
+            if (audio) {
+              stopAllAudio(); //the first stop other audio from playing
+              audio.currentTime = 0; //resets the audio to the start
+              audio.play(); //Play the audio
+            }
+          } 
+          //If it is already visible then close the story
+          else {
+            animateDown(about, about.getAttribute('position').y); //hides the about overlay
+            animateDown(fact, fact.getAttribute('position').y); //hides the about overlay
+
+            //Stops and resets the story audio
+            if (audio) {
+              audio.pause();
+              audio.currentTime = 0; //This resets the audio from the start
+            }
+          }
+        }
+
+        //this is a normal click 
+        button.addEventListener('click', toggleDropdown);
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          button.dispatchEvent(new Event('click'));
+        });
+      }
+
+      // This is setting up all the buttons for Story 1 and story 2
+      setupStoryButton('#story1_button', '#story1_about', '#story1_fact', '#story2_about', '#story2_fact', '#story1_audio');
+      setupStoryButton('#story2_button', '#story2_about', '#story2_fact', '#story1_about', '#story1_fact', '#story2_audio');
+    </script>
+  </body>
+</html>
