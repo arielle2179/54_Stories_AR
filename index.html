@@ -22,7 +22,7 @@
       </a-entity>
 
       <!-- This small section is the model of Ponte -->
-      <a-marker type="pattern" url="pattern.patt"
+      <a-marker type="pattern" url="pattern1.patt"
                 emitevents="true"
                 smooth="true"
                 smoothCount="10"
@@ -111,6 +111,9 @@
         });
       }
 
+      // This is setting up all the buttons for Story 1 and story 2
+      setupStoryButton('#story1_button', '#story1_about', '#story1_fact', '#story2_about', '#story2_fact', '#story1_audio', '#story2_button','#story2_audio');
+
       //This is a reusable function, each of the toggles own panels 
       function setupStoryButton(buttonId, aboutId, factId, otherAboutId, otherFactId, audioId = null) {
         // Grabs the DOM elements and uses the ID
@@ -164,10 +167,6 @@
           button.dispatchEvent(new Event('click'));
         });
       }
-
-      // This is setting up all the buttons for Story 1 and story 2
-      setupStoryButton('#story1_button', '#story1_about', '#story1_fact', '#story2_about', '#story2_fact', '#story1_audio');
-      setupStoryButton('#story2_button', '#story2_about', '#story2_fact', '#story1_about', '#story1_fact', '#story2_audio');
     </script>
   </body>
 </html>
