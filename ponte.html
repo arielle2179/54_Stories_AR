@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>54 Stories AR</title>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+
+    <!-- Marker -->
+    <a-marker type="pattern" url="pattern.patt">
+
+      <!-- Ponte 3D model -->
+      <a-entity 
+        gltf-model="url(final_ponte.glb)" 
+        scale="0.5 0.5 0.5" 
+        position="0 0 0" 
+        rotation="0 0 0">
+      </a-entity>
+
+      <!-- Story 1 overlay (visible with Ponte) -->
+      <a-image id="story1" src="story_1_overlay.png" width="0.5" height="0.5" position="-0.6 1.5 0" rotation="-90 0 0"></a-image>
+      <!-- Hidden dropdown images for Story 1 -->
+      <a-image id="story1_about" src="story_1_about_overlay.png" width="0.4" height="0.4" position="-0.6 1.5 0" rotation="-90 0 0" visible="false"></a-image>
+      <a-image id="story1_fact" src="story_1_fact_overlay.png" width="0.4" height="0.4" position="-0.6 1.5 0" rotation="-90 0 0" visible="false"></a-image>
+
+      <!-- Story 2 overlay (visible with Ponte) -->
+      <a-image id="story2" src="story_2_overlay.png" width="0.5" height="0.5" position="0.6 1.5 0" rotation="-90 0 0"></a-image>
+      <!-- Hidden dropdown images for Story 2 -->
+      <a-image id="story2_about" src="story_2_about_overlay.png" width="0.4" height="0.4" position="0.6 1.5 0" rotation="-90 0 0" visible="false"></a-image>
+      <a-image id="story2_fact" src="story_2_fact_overlay.png" width="0.4" height="0.4" position="0.6 1.5 0" rotation="-90 0 0" visible="false"></a-image>
+
+    </a-marker>
+
+    <!-- Camera -->
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
+  <script>
+    function animateDropdown(image, targetY) {
+      image.setAttribute('visible', true);
+      image.setAttribute('animation', {
+        property: 'position',
+        to: `${image.getAttribute('position').x} ${targetY} ${image.getAttribute('position').z}`,
+        dur: 500,
+        easing: 'easeOutQuad'
+      });
+    }
+
+    // Story 1 click
+    document.querySelector('#story1').addEventListener('click', () => {
+      animateDropdown(document.querySelector('#story1_about'), 1.0);
+      animateDropdown(document.querySelector('#story1_fact'), 0.6);
+    });
+
+    // Story 2 click
+    document.querySelector('#story2').addEventListener('click', () => {
+      animateDropdown(document.querySelector('#story2_about'), 1.0);
+      animateDropdown(document.querySelector('#story2_fact'), 0.6);
+    });
+  </script>
+
+</body>
+</html>
